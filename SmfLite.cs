@@ -53,6 +53,22 @@ namespace SmfLite
         #endregion
     }
 
+    public class TempoEvent : MidiEvent
+    {
+        public readonly float Tempo;
+
+        public TempoEvent(byte[] bytes) : base(0xFF, 0x51, 0x03)
+        {
+            var micro = (bytes[0] << 16) + (bytes[1] << 8) + bytes[2];
+            Tempo = (60 * 1000 * 1000) / micro;
+        }
+
+        public override string ToString()
+        {
+            return "[Tempo " + Tempo + "]";
+        }
+    }
+
     //
     // MIDI track
     //
