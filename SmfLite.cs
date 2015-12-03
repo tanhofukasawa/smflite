@@ -30,7 +30,7 @@ namespace SmfLite
     //
     // MIDI event
     //
-    public struct MidiEvent
+    public class MidiEvent
     {
         #region Public members
 
