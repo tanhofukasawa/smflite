@@ -321,12 +321,25 @@ namespace SmfLite
                 if ((reader.PeekByte () & 0x80) != 0) {
                     ev = reader.ReadByte ();
                 }
-                
-                if (ev == 0xff) {
-                    // 0xff: Meta event (unused).
-                    reader.Advance (1);
-                    reader.Advance (reader.ReadMultiByteValue ());
-                } else if (ev == 0xf0) {
+
+                if (ev == 0xff)
+                {
+                    // 0xff: Meta event (unused except tempo).
+                    byte data1 = reader.ReadByte();
+
+                    // tempo
+                    if (data1 == 0x51)
+                    {
+                        reader.Advance(1);
+                        track.AddEvent(delta, new TempoEvent(new[] { reader.ReadByte(), reader.ReadByte(), reader.ReadByte() }));
+                    }
+                    else
+                    {
+                        reader.Advance(reader.ReadMultiByteValue());
+                    }
+                }
+                else if (ev == 0xf0)
+                {
                     // 0xf0: SysEx (unused).
                     while (reader.ReadByte() != 0xf7) {
                     }
