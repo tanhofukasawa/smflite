@@ -99,10 +99,13 @@ namespace SmfLite
         #endregion
 
         #region Public members
+            
+        public bool voiceMessage;
 
         public MidiTrack ()
         {
             sequence = new List<DeltaEventPair> ();
+            voiceMessage = false;
         }
 
         // Returns an enumerator which enumerates the all delta-event pairs.
@@ -348,6 +351,11 @@ namespace SmfLite
                     byte data1 = reader.ReadByte ();
                     byte data2 = ((ev & 0xe0) == 0xc0) ? (byte)0 : reader.ReadByte ();
                     track.AddEvent (delta, new MidiEvent (ev, data1, data2));
+                }
+                
+                if (ev >= 0x80 && ev <= 0xef)
+                {
+                    track.voiceMessage = true;
                 }
             }
             
