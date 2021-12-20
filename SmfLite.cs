@@ -338,14 +338,19 @@ namespace SmfLite
                     }
                     else
                     {
-                        reader.Advance(reader.ReadMultiByteValue());
+                        var len = reader.ReadMultiByteValue();
+                        reader.Advance(len);
+                        track.AddEvent(delta, new MidiEvent(ev, data1, (byte)len)); // NOP
                     }
                 }
                 else if (ev == 0xf0)
                 {
+                    int sz = 0;
                     // 0xf0: SysEx (unused).
                     while (reader.ReadByte() != 0xf7) {
+                        sz++;
                     }
+                    track.AddEvent(delta, new MidiEvent(ev, (byte)sz, 0)); // NOP
                 } else {
                     // MIDI event
                     byte data1 = reader.ReadByte ();
